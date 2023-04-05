@@ -368,5 +368,18 @@
 			"Identifying_Features": "Vase-shaped cylindrical body measuring about 20-30mm in length.<br>Each cylinder opens to the exterior by an osculum.<br>Body surface contains numerous pores called ostia or incurrent pores.<br>Osculum is encircled by a fringe of monoaxon spicules.",
 			"Common_Characters": "Body wall consists of outer dermal epithelium and inner fllattend epithelium.<br>Skeleton comprises calcareous spicules of monaxon,triaxon and tetraxon type."
 		}
+	},
+	"Sycon26": {
+		"Level_of_organisation": "Tissue/Organ/Organ_system",
+		"Symmetry": "Bilateral",
+		"Body_Cavity_or_Coelom": "With_true_coelom(coelomates)",
+		"phylum": "Chordata",
+		"property": {
+			"Scienctific_name": "Sycon",
+			"Distribution": "Found in abundance near North Atlantic shores",
+			"Habitat": "It is solitary or colonial marine sponge found attached to the rocks in shallow water.",
+			"Identifying_Features": "Vase-shaped cylindrical body measuring about 20-30mm in length.<br>Each cylinder opens to the exterior by an osculum.<br>Body surface contains numerous pores called ostia or incurrent pores.<br>Osculum is encircled by a fringe of monoaxon spicules.",
+			"Common_Characters": "Body wall consists of outer dermal epithelium and inner fllattend epithelium.<br>Skeleton comprises calcareous spicules of monaxon,triaxon and tetraxon type."
+		}
 	}
 }
