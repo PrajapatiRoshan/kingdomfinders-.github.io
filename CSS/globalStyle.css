@@ -88,3 +88,13 @@ select {
 	text-align: center;
 	border: 1px solid rgb(214, 211, 211);
 }
+#searchIp {
+	width: 200px;
+	background-color: var(--Textcolor-secondary);
+	right: 300px;
+	color: var(--Textcolor-primary);
+}
+#searchIp::-webkit-input-placeholder {
+	/* WebKit browsers */
+	font-size: 15px;
+}

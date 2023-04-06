@@ -1,6 +1,7 @@
 "use strict";
 
 const screenParent = document.querySelector(".ScreenBody");
+const searchValue = document.getElementById("searchIp");
 
 var keysForTitle = [
 	"Level_of_organisation",
@@ -26,17 +27,16 @@ const getKeysFromObj = function (obj, stopKey) {
 		if (typeof obj[key] === "object")
 			return getKeysFromObj(obj[key], stopKey, result);
 	});
-	return result;
+	return result.sort();
 };
 
 const getValuesFromkey = function (data) {
-	let text = `<div class="rowTable">
-    <p class="dataText">${data[0]}</p>
-    <p class="dataText">${data[1]}</</p>
-    <p class="dataText">${data[2]}</</p>
-    <p class="dataText">${data[3]}</</p>
-    <p class="dataText">${data[4]}</</p>
-</div>`;
+	let text = ``;
+
+	data.forEach((e) => {
+		text += `<p class="dataText">${e}</p>`;
+	});
+
 	screenParent.insertAdjacentHTML(
 		"beforeend",
 		`<div class="rowTable">${text}</div>`
@@ -44,14 +44,12 @@ const getValuesFromkey = function (data) {
 };
 
 const getOption = function (arr) {
-	let text = "";
-	arr.forEach((e) => {
-		text += `<option value="${e}">${e.replaceAll("_", " ")}</option>`;
+	return arr.map((e) => {
+		return `<option value="${e}">${e.replaceAll("_", " ")}</option>`;
 	});
-	return text;
 };
 
-const clearData = function (text) {
+const clearData = function () {
 	while (screenParent.childNodes.length > 2) {
 		screenParent.removeChild(screenParent.lastChild);
 	}
@@ -59,31 +57,34 @@ const clearData = function (text) {
 
 const filterData = function (mainData, obj) {
 	clearData();
+	// console.log(obj);
 	let flag = false;
 	let current = "";
-	Object.keys(mainData).forEach((element) => {
-		let listofProperty = [];
-		Object.keys(obj).forEach((filter) => {
-			if (filter === "Example" && element === obj[filter]) {
-				current = element;
-				flag = true;
-			}
-			if (mainData[element][filter] === obj[filter]) {
-				current = element;
-				flag = true;
-			}
-		});
-		if (flag) {
-			keysForTitle.forEach((title) => {
-				title === "Example"
-					? listofProperty.push(current)
-					: listofProperty.push(mainData[current]?.[title] || "-");
+	Object.keys(mainData)
+		.sort()
+		.forEach((element) => {
+			let listofProperty = [];
+			Object.keys(obj).forEach((filter) => {
+				if (filter === "Example" && element === obj[filter]) {
+					current = element;
+					flag = true;
+				}
+				if (mainData[element][filter] === obj[filter]) {
+					current = element;
+					flag = true;
+				}
 			});
-		}
-		if (!(listofProperty.length === 0)) getValuesFromkey(listofProperty);
-		flag = false;
-		current = "";
-	});
+			if (flag) {
+				keysForTitle.forEach((title) => {
+					title === "Example"
+						? listofProperty.push(current)
+						: listofProperty.push(mainData[current]?.[title] || "-");
+				});
+			}
+			if (!(listofProperty.length === 0)) getValuesFromkey(listofProperty);
+			flag = false;
+			current = "";
+		});
 };
 
 const addListnerToDropDown = function (mainData) {
@@ -100,9 +101,8 @@ const addListnerToDropDown = function (mainData) {
 
 const htmlDataHeading = async function () {
 	const data = await (await fetch(`../DataScource/animals.json`)).json();
-	console.log(data);
-	let htmlItem = "";
-	keysForTitle.forEach((element, i) => {
+
+	let dropDownOption = keysForTitle.reduce((htmlItem, element, i) => {
 		htmlItem += `
         <div class="rowHeading">
             <label for="${element}">${element.replaceAll("_", " ")}</label><br/>
@@ -110,28 +110,71 @@ const htmlDataHeading = async function () {
                 <option value="select">Select</option>
                 ${getOption(
 									element === "Example"
-										? Object.keys(data)
+										? Object.keys(data).sort()
 										: getKeysFromObj(data, element)
 								)}
             </select>
         </div>`;
 		result = [];
-	});
-	let text = `<div class="rowTable" id="rowHeadingTitle">${htmlItem}</div><br>`;
-	screenParent.insertAdjacentHTML("afterbegin", text);
+		return htmlItem;
+	}, "");
+	screenParent.insertAdjacentHTML(
+		"afterbegin",
+		`<div class="rowTable" id="rowHeadingTitle">${dropDownOption}</div><br>`
+	);
 	listData(data);
 	addListnerToDropDown(data);
+	SearchButton(data);
 };
 
 const listData = function (mainData) {
-	Object.keys(mainData).forEach((exapmle) => {
-		let listofProperty = [];
-		keysForTitle.forEach((title) => {
-			title === "Example"
-				? listofProperty.push(exapmle)
-				: listofProperty.push(mainData[exapmle]?.[title] || "-");
+	Object.keys(mainData)
+		.sort()
+		.forEach((exapmle) => {
+			// let listofProperty = [];
+			// keysForTitle.forEach((title) => {
+			// 	title === "Example"
+			// 		? listofProperty.push(exapmle)
+			// 		: listofProperty.push(mainData[exapmle]?.[title] || "-");
+			// });
+			// getValuesFromkey(listofProperty);
+
+			getValuesFromkey(
+				keysForTitle.map((title) => {
+					return title === "Example"
+						? exapmle
+						: mainData[exapmle]?.[title] || "-";
+				})
+			);
 		});
-		getValuesFromkey(listofProperty);
+};
+
+const searchData = function (mainData, value = []) {
+	clearData();
+	let t = Object.keys(mainData)
+		.sort()
+		.filter((key) => {
+			let temp = key.toLowerCase().split("");
+			if (value.every((e) => temp.includes(e))) return true;
+		});
+	// console.log(t);
+	t.sort().forEach((exapmle) => {
+		getValuesFromkey(
+			keysForTitle.map((title) => {
+				return title === "Example"
+					? exapmle
+					: mainData[exapmle]?.[title] || "-";
+			})
+		);
+	});
+};
+
+const SearchButton = function (mainData) {
+	searchValue.addEventListener("input", () => {
+		searchData(mainData, searchValue.value.trim().toLowerCase().split(""));
+	});
+	searchValue.addEventListener("keypress", (e) => {
+		e.key === "Enter" ? (searchValue.value = "") : "";
 	});
 };
 
