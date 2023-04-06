@@ -3,7 +3,7 @@
 const screenParent = document.querySelector(".ScreenBody");
 const searchValue = document.getElementById("searchIp");
 
-var keysForTitle = [
+const keysForTitle = [
 	"Level_of_organisation",
 	"Symmetry",
 	"Body_Cavity_or_Coelom",
@@ -11,7 +11,7 @@ var keysForTitle = [
 	"Example",
 ];
 
-var result = [];
+let result = [];
 
 window.addEventListener("load", (e) => {
 	document.getElementById("reset").onclick = function () {
@@ -31,11 +31,10 @@ const getKeysFromObj = function (obj, stopKey) {
 };
 
 const getValuesFromkey = function (data) {
-	let text = ``;
-
-	data.forEach((e) => {
-		text += `<p class="dataText">${e}</p>`;
-	});
+	let text = data.reduce((acc, e) => {
+		acc += `<p class="dataText">${e}</p>`;
+		return acc;
+	}, "");
 
 	screenParent.insertAdjacentHTML(
 		"beforeend",
